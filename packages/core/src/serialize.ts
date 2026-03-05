@@ -46,7 +46,9 @@ function stableSerializeInternal(value: SerializedParam): SerializedParam {
   }
 
   if (Array.isArray(value)) {
-    return value.map((item) => stableSerializeInternal(item as SerializedParam)) as readonly SerializedParam[]
+    return value.map((item) =>
+      item === undefined ? null : stableSerializeInternal(item as SerializedParam),
+    ) as readonly SerializedParam[]
   }
 
   const obj = value as Record<string, SerializedParam>

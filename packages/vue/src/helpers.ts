@@ -17,7 +17,7 @@ import {
   createEdenQueryProxy,
   EDEN_ROUTE_SYMBOL,
 } from '@elysia-vue-query/core'
-import type { EdenQueryKey, RouteMeta } from '@elysia-vue-query/core'
+import type { EdenQueryKey } from '@elysia-vue-query/core'
 import type { MaybeRef } from 'vue'
 import { toValue } from 'vue'
 
@@ -75,32 +75,10 @@ export interface EdenQueryHelpers<TClient> {
   getKey(endpoint: unknown): EdenQueryKey
 }
 
+type CallableEndpoint = (...args: unknown[]) => Promise<EdenResponse<unknown, unknown>>
+
 export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpers<TClient> {
   const proxy = createEdenQueryProxy(client)
-
-  /**
-   * Navigate the real Eden client using route metadata and call the endpoint.
-   * The proxy only tracks segments/method/params — it can't make HTTP calls.
-   */
-  function callEndpoint(meta: RouteMeta, body?: unknown): Promise<EdenResponse<unknown, unknown>> {
-    let current: unknown = client
-    for (const segment of meta.segments) {
-      current = (current as Record<string, unknown>)[segment]
-    }
-
-    if (!meta.method) {
-      throw new Error('Route metadata is missing an HTTP method')
-    }
-
-    const methodFn = (current as Record<string, (...args: unknown[]) => Promise<EdenResponse<unknown, unknown>>>)[meta.method]
-    if (typeof methodFn !== 'function') {
-      throw new Error(`Expected "${meta.method}" to be a callable method on the Eden client`)
-    }
-
-    if (body !== undefined) return methodFn(body)
-    if (meta.params !== undefined) return methodFn(meta.params)
-    return methodFn()
-  }
 
   function getKey(endpoint: unknown): EdenQueryKey {
     return buildQueryKey(endpoint)
@@ -123,7 +101,7 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
       ...options,
       queryKey,
       queryFn: async () => {
-        const response = await callEndpoint(meta)
+        const response = await (resolvedEndpoint as unknown as CallableEndpoint)()
         if (response.error !== null) throw response.error
         return response.data as InferEdenData<TEndpoint>
       },
@@ -147,7 +125,7 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
     return tanstackUseMutation({
       ...options,
       mutationFn: async (variables: InferEdenBody<TEndpoint>) => {
-        const response = await callEndpoint(meta, variables)
+        const response = await (resolvedEndpoint as unknown as CallableEndpoint)(variables)
         if (response.error !== null) throw response.error
         void qc.invalidateQueries({ queryKey: invalidationKey })
         return response.data as InferEdenData<TEndpoint>
@@ -171,7 +149,7 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
     await qc.prefetchQuery({
       queryKey,
       queryFn: async () => {
-        const response = await callEndpoint(meta)
+        const response = await (endpoint as unknown as CallableEndpoint)()
         if (response.error !== null) throw response.error
         return response.data as InferEdenData<TEndpoint>
       },

@@ -6,3 +6,4 @@ bun.lock
 .agents
 docs/.vitepress/cache
 docs/.vitepress/dist
+.nuxt

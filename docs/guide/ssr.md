@@ -6,12 +6,38 @@
 await eden.prefetch(eden.proxy.users.get, queryClient)
 ```
 
-## Nuxt setup
+## Nuxt module (recommended)
 
-### Plugin
+The `@elysia-vue-query/nuxt` module handles everything automatically — VueQueryPlugin registration, SSR dehydration, and client hydration.
+
+```bash
+bun add @elysia-vue-query/nuxt
+```
 
 ```ts
-// plugins/vue-query.ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@elysia-vue-query/nuxt'],
+})
+```
+
+That's it. No plugin file needed. The module:
+
+1. Registers `VueQueryPlugin` with a fresh `QueryClient`
+2. Auto-imports `createEdenQueryHelpers` from `@elysia-vue-query/vue`
+3. Dehydrates query cache after SSR render (`app:rendered` hook)
+4. Hydrates query cache on client (`app:created` hook)
+
+::: tip
+See the [Nuxt playground](https://github.com/elysia-vue-query/elysia-vue-query/tree/main/playground/nuxt-app) for a full working example with pages, queries, and mutations.
+:::
+
+## Manual setup
+
+If you're not using the Nuxt module (or using a different SSR framework), set up the plugin yourself:
+
+```ts
+// plugins/vue-query.ts (only needed without @elysia-vue-query/nuxt)
 import {
   VueQueryPlugin,
   QueryClient,

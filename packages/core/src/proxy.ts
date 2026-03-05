@@ -1,4 +1,5 @@
 import { EDEN_ROUTE_SYMBOL } from './index'
+import { stableSerialize } from './serialize'
 import type { RouteMeta } from './types'
 
 const HTTP_METHODS = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options'])
@@ -12,14 +13,11 @@ export function getRouteMeta(enhanced: unknown): RouteMeta | undefined {
   return undefined
 }
 
-function createBrandedProxy(getMeta: () => RouteMeta): unknown {
-  return new Proxy(function () {} as never, {
-    has: routeSymbolHas,
-    get(_t, p: string | symbol) {
-      if (p === EDEN_ROUTE_SYMBOL) return getMeta()
-      return undefined
-    },
-  })
+function resolveTarget(client: unknown, key: string): unknown {
+  if (client != null && typeof client === 'object') {
+    return (client as Record<string, unknown>)[key]
+  }
+  return undefined
 }
 
 function createProxyInternal(
@@ -39,14 +37,31 @@ function createProxyInternal(
       }
 
       const segment = prop
+      const nextTarget = resolveTarget(client, segment)
 
       if (HTTP_METHODS.has(segment)) {
+        const targetFn = nextTarget
+
         const methodFn = function methodProxy(params?: unknown) {
-          return createBrandedProxy(() => ({
+          const meta: RouteMeta = {
             segments,
             method: segment,
             params: params as RouteMeta['params'],
-          }))
+          }
+
+          return new Proxy(function () {} as never, {
+            has: routeSymbolHas,
+            get(_t, p: string | symbol) {
+              if (p === EDEN_ROUTE_SYMBOL) return meta
+              return undefined
+            },
+            apply(_t, thisArg, _args: unknown[]) {
+              if (typeof targetFn === 'function') {
+                return Reflect.apply(targetFn, thisArg, params !== undefined ? [params] : [])
+              }
+              return undefined
+            },
+          })
         }
 
         Object.defineProperty(methodFn, 'name', { value: segment, configurable: true })
@@ -60,57 +75,32 @@ function createProxyInternal(
             }
             return Reflect.get(target, p)
           },
+          apply(_target, thisArg, args: unknown[]) {
+            if (typeof targetFn === 'function') {
+              return Reflect.apply(targetFn, thisArg, args)
+            }
+            return methodFn.apply(thisArg, args as [params?: unknown])
+          },
         })
       }
 
-      return createProxyInternal(client, [...segments, segment])
+      return createProxyInternal(nextTarget, [...segments, segment])
     },
 
     apply(_target, _thisArg, args: unknown[]) {
-      const params = args[0]
+      const param = args[0]
+      const serialized = stableSerialize(param)
+      const serializedSegment = serialized !== undefined ? JSON.stringify(serialized) : undefined
+      const newSegments = serializedSegment !== undefined
+        ? [...segments, serializedSegment]
+        : segments
 
-      return new Proxy(function () {} as never, {
-        has: routeSymbolHas,
+      let nextClient: unknown = client
+      if (typeof client === 'function') {
+        nextClient = (client as (...a: unknown[]) => unknown)(...args)
+      }
 
-        get(_t, prop: string | symbol) {
-          if (prop === EDEN_ROUTE_SYMBOL) {
-            return { segments, params: params as RouteMeta['params'] } satisfies RouteMeta
-          }
-
-          if (typeof prop === 'symbol') return undefined
-
-          const segment = prop
-
-          if (HTTP_METHODS.has(segment)) {
-            const methodFn = function methodWithParams(extraParams?: unknown) {
-              return createBrandedProxy(() => ({
-                segments,
-                method: segment,
-                params: (extraParams !== undefined ? extraParams : params) as RouteMeta['params'],
-              }))
-            }
-
-            Object.defineProperty(methodFn, 'name', { value: segment, configurable: true })
-            Object.defineProperty(methodFn, 'length', { value: 1, configurable: true })
-
-            return new Proxy(methodFn, {
-              has: routeSymbolHas,
-              get(target, p: string | symbol) {
-                if (p === EDEN_ROUTE_SYMBOL) {
-                  return {
-                    segments,
-                    method: segment,
-                    params: params as RouteMeta['params'],
-                  } satisfies RouteMeta
-                }
-                return Reflect.get(target, p)
-              },
-            })
-          }
-
-          return createProxyInternal(undefined, [...segments, segment])
-        },
-      })
+      return createProxyInternal(nextClient, newSegments)
     },
   })
 }

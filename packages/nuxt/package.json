@@ -1,0 +1,58 @@
+{
+  "name": "@elysia-vue-query/nuxt",
+  "version": "0.1.0",
+  "description": "Nuxt module for elysia-vue-query with SSR dehydration/hydration",
+  "repository": "elysia-vue-query/elysia-vue-query",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "nuxt-module-build build",
+    "prepack": "nuxt-module-build build",
+    "dev": "bun run dev:prepare && nuxt dev ../../playground/nuxt-app",
+    "dev:build": "nuxt build ../../playground/nuxt-app",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare ../../playground/nuxt-app",
+    "release": "bun run lint && bun run prepack && changelogen --release && bun publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test:types": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^4.3.1",
+    "@elysia-vue-query/vue": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/vue-query": ">=5.0.0",
+    "nuxt": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "^3.2.2",
+    "@nuxt/eslint-config": "^1.15.2",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.3.1",
+    "@nuxt/test-utils": "^4.0.0",
+    "@tanstack/vue-query": "^5.92.9",
+    "@types/node": "latest",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.0.2",
+    "nuxt": "^4.3.1",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18",
+    "vue-tsc": "^3.2.5"
+  }
+}

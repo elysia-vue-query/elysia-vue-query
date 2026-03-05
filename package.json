@@ -18,6 +18,7 @@
     "typecheck": "tsc --noEmit -p packages/core/tsconfig.json && tsc --noEmit -p packages/vue/tsconfig.json",
     "playground:api": "bun run --filter @playground/api dev",
     "playground:vue": "bun run --filter @playground/vue-app dev",
+    "playground:nuxt": "bun run --filter @playground/nuxt-app dev",
     "docs:dev": "bun run --filter @elysia-vue-query/docs dev",
     "docs:build": "bun run --filter @elysia-vue-query/docs build",
     "docs:preview": "bun run --filter @elysia-vue-query/docs preview"

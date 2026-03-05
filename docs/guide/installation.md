@@ -31,3 +31,32 @@ Make sure these are in your project:
 ## TypeScript
 
 Requires TypeScript 5.7+ with strict mode and `"moduleResolution": "bundler"`. Both ESM (`.mjs` / `.d.mts`) and CJS (`.cjs` / `.d.cts`) are shipped.
+
+## Nuxt
+
+For Nuxt projects, install the module instead:
+
+::: code-group
+
+```bash [bun]
+bun add @elysia-vue-query/nuxt
+```
+
+```bash [pnpm]
+pnpm add @elysia-vue-query/nuxt
+```
+
+```bash [npm]
+npm install @elysia-vue-query/nuxt
+```
+
+:::
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@elysia-vue-query/nuxt'],
+})
+```
+
+The module auto-registers `VueQueryPlugin`, handles SSR hydration/dehydration, and auto-imports `createEdenQueryHelpers`. See the [SSR guide](/guide/ssr) for details.
