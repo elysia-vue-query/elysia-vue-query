@@ -37,7 +37,7 @@
     "dev": "tsdown --watch"
   },
   "dependencies": {
-    "@elysia-vue-query/core": "^0.1.0"
+    "@elysia-vue-query/core": "^1"
   },
   "peerDependencies": {
     "@tanstack/vue-query": "^5",

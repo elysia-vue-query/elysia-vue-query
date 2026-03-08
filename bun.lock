@@ -33,7 +33,7 @@
     },
     "packages/core": {
       "name": "@elysia-vue-query/core",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "devDependencies": {
         "tsdown": "^0.21.0",
         "typescript": "^5.9.3",
@@ -43,7 +43,7 @@
       "name": "@elysia-vue-query/nuxt",
       "version": "0.1.0",
       "dependencies": {
-        "@elysia-vue-query/vue": "workspace:*",
+        "@elysia-vue-query/vue": "^1",
         "@nuxt/kit": "^4.3.1",
       },
       "devDependencies": {
@@ -70,7 +70,7 @@
       "name": "@elysia-vue-query/vue",
       "version": "0.1.0",
       "dependencies": {
-        "@elysia-vue-query/core": "workspace:*",
+        "@elysia-vue-query/core": "^1",
       },
       "devDependencies": {
         "@tanstack/vue-query": "^5.92.9",
@@ -2394,6 +2394,8 @@
     "@bomb.sh/tab/cac": ["cac@6.7.14", "", {}, "sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ=="],
 
     "@changesets/parse/js-yaml": ["js-yaml@4.1.1", "", { "dependencies": { "argparse": "^2.0.1" }, "bin": { "js-yaml": "bin/js-yaml.js" } }, "sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA=="],
+
+    "@elysia-vue-query/vue/@elysia-vue-query/core": ["@elysia-vue-query/core@0.1.0", "", {}, "sha512-7tj7/xiwvEZ5Pl1/x/05WoPPtAaW1i67so16/WSLBjm/Cm3kf2XVVT7PL/rz/7IAkZGa/I553oVaugkdqbBH0A=="],
 
     "@eslint-community/eslint-utils/eslint-visitor-keys": ["eslint-visitor-keys@3.4.3", "", {}, "sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag=="],
 
