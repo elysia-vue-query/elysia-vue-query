@@ -1,6 +1,6 @@
 {
   "name": "@elysia-vue-query/core",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Proxy engine, key builders, and serialization for elysia-vue-query",
   "type": "module",
   "author": "Saku Shiina <shiinasaku@proton.me>",

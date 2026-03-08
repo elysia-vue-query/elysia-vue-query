@@ -87,7 +87,7 @@ jobs:
         with:
           # When pending changesets exist → opens / updates a "Version Packages" PR
           # When the version PR is merged  → runs this publish command
-          publish: bun run changeset:publish
+          publish: npx changeset publish
           title: "chore: version packages"
           commit: "chore: version packages"
           createGithubReleases: true
