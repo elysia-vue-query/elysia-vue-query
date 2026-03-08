@@ -1,6 +1,6 @@
 {
   "name": "@elysia-vue-query/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Proxy engine, key builders, and serialization for elysia-vue-query",
   "keywords": [
     "eden",
