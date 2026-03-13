@@ -28,9 +28,6 @@ jobs:
           node-version: "24"
           cache: true
 
-      - name: Prepare Nuxt module
-        run: vp exec nuxt-module-build prepare --filter @elysia-vue-query/nuxt
-
       - name: Build packages
         run: vp run build
 
@@ -67,9 +64,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           registry-url: https://registry.npmjs.org
-
-      - name: Prepare Nuxt module
-        run: vp exec nuxt-module-build prepare --filter @elysia-vue-query/nuxt
 
       - name: Build packages
         run: vp run build
