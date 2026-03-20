@@ -1,22 +1,21 @@
-name: CI
+name: Package Preview
 
 on:
   pull_request:
     branches: [main]
-    paths-ignore:
-      - "docs/**"
-      - "*.md"
-      - "LICENSE"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  ci:
-    name: Check, Build & Test
+  preview:
+    name: Publish PR Preview Packages
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -28,11 +27,14 @@ jobs:
           node-version: "24"
           cache: true
 
+      - name: Install dependencies
+        run: vp install
+
       - name: Prepare Nuxt module
         run: cd packages/nuxt && vp run dev:prepare
 
       - name: Build packages
         run: vp run build
 
-      - name: Run tests
-        run: vp test run
+      - name: Publish preview packages
+        run: vp dlx pkg-pr-new publish --compact --pnpm './packages/*'

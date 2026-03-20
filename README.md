@@ -259,23 +259,29 @@ Returns an `eden` object with:
 
 ```sh
 # Install dependencies
-bun install
+vp install
 
 # Build all packages
-bun run build
+vp run build
 
 # Run tests
-bun run test
+vp test run
 
 # Typecheck
-bun run typecheck
+vp run typecheck
 ```
 
-Releases are managed by [Changesets](https://github.com/changesets/changesets). To propose a change:
+Releases are managed with `bumpp` and Git tags.
 
 ```sh
-bun run changeset
+# preview the next recursive bump (no files changed)
+vp run release:dry
+
+# run checks, bump versions, create commit + tag, and push
+vp run release
 ```
+
+Publishing runs in GitHub Actions from `v*` tags.
 
 ---
 
