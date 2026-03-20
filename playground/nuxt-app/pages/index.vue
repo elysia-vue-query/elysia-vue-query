@@ -32,7 +32,7 @@
             apiOnline ? "Online" : "Offline"
           }}</span>
         </div>
-        <div class="stat-sub">localhost:3000</div>
+        <div class="stat-sub">{{ runtimeConfig.public.apiBaseUrl }}</div>
       </div>
     </div>
 
@@ -236,6 +236,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { eden } from "~/composables/eden";
+
+const runtimeConfig = useRuntimeConfig();
 
 const { data: users, status: usersStatus } = eden.useQuery(eden.proxy.users.get);
 const { data: posts, status: postsStatus } = eden.useQuery(eden.proxy.posts.get);

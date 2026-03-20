@@ -20,6 +20,8 @@ const queryKeyDisplay = computed(() => {
     .map((k) => (typeof k === "symbol" ? "Symbol(elysia-vue-query)" : JSON.stringify(k)))
     .join(" → ");
 });
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 </script>
 
 <template>
@@ -163,6 +165,17 @@ const queryKeyDisplay = computed(() => {
             :style="`width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${apiOnline ? '#34d399' : '#f87171'};box-shadow:0 0 8px ${apiOnline ? 'rgba(52,211,153,0.6)' : 'rgba(248,113,113,0.6)'};`"
           />
           <span class="stat-lbl">API {{ apiOnline ? "online" : "offline" }}</span>
+        </div>
+        <div class="stat-sep-line"></div>
+        <div class="stat-item">
+          <code
+            style="
+              font-size: 0.67rem;
+              color: rgba(255, 255, 255, 0.28);
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+            "
+            >{{ apiBaseUrl }}</code
+          >
         </div>
         <div class="stat-sep-line"></div>
         <div class="stat-item">

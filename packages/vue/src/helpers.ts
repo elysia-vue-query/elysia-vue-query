@@ -18,7 +18,7 @@ import {
 } from "@elysia-vue-query/core";
 import type { EdenQueryKey } from "@elysia-vue-query/core";
 import type { MaybeRef } from "vue";
-import { isRef, computed } from "vue";
+import { isRef, computed, unref } from "vue";
 
 type EdenResponse<TData, TError> = {
   data: TData | null;
@@ -55,6 +55,7 @@ export interface EdenUseMutationOptions<TData, TError, TVariables> extends Omit<
   "mutationFn"
 > {
   readonly mutationFn?: never;
+  readonly invalidates?: ReadonlyArray<unknown>;
 }
 
 export interface EdenQueryHelpers<TClient> {
@@ -140,9 +141,11 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
     unknown
   > {
     const qc = useQueryClient();
+    const mutationOptions = options ?? {};
+    const invalidates = mutationOptions.invalidates ?? [];
 
     return tanstackUseMutation({
-      ...options,
+      ...mutationOptions,
       mutationFn: async (variables: InferEdenBody<TEndpoint>) => {
         const resolvedEndpoint = isRef(endpoint) ? endpoint.value : endpoint;
         const meta = getRouteMeta(resolvedEndpoint);
@@ -153,11 +156,30 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
           );
         }
 
-        const invalidationKey = buildMutationInvalidationKey(resolvedEndpoint);
         const response = await (resolvedEndpoint as unknown as CallableEndpoint)(variables);
         if (response.error !== null) throw response.error;
-        void qc.invalidateQueries({ queryKey: invalidationKey });
         return response.data as InferEdenData<TEndpoint>;
+      },
+      onSuccess: async (
+        data: InferEdenData<TEndpoint>,
+        variables: InferEdenBody<TEndpoint>,
+        onMutateResult: unknown,
+        context: unknown,
+      ) => {
+        await (mutationOptions as any).onSuccess?.(data, variables, onMutateResult, context);
+
+        const resolvedEndpoint = isRef(endpoint) ? endpoint.value : endpoint;
+        const invalidationTasks: Array<Promise<void>> = [
+          qc.invalidateQueries({ queryKey: buildMutationInvalidationKey(resolvedEndpoint) }),
+        ];
+
+        for (const target of invalidates) {
+          invalidationTasks.push(
+            qc.invalidateQueries({ queryKey: buildMutationInvalidationKey(unref(target)) }),
+          );
+        }
+
+        await Promise.all(invalidationTasks);
       },
     } as any) as UseMutationReturnType<
       InferEdenData<TEndpoint>,

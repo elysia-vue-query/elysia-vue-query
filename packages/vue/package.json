@@ -50,7 +50,7 @@
     "@elysia-vue-query/core": "^1.1.0"
   },
   "devDependencies": {
-    "@tanstack/vue-query": "^5.92.9",
+    "@tanstack/vue-query": "^5.92.12",
     "typescript": "^5.9.3",
     "vite-plus": "catalog:",
     "vue": "^3.5.30"

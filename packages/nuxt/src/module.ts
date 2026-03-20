@@ -7,7 +7,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: "@elysia-vue-query/nuxt",
     configKey: "elysiaVueQuery",
     compatibility: {
-      nuxt: ">=3.0.0",
+      nuxt: ">=4.0.0",
     },
   },
   defaults: {},

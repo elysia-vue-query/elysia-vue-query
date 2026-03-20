@@ -2,5 +2,6 @@ import { treaty } from "@elysiajs/eden";
 import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
 import type { App } from "@playground/api";
 
-const client = treaty<App>("http://localhost:3000");
+const runtimeConfig = useRuntimeConfig();
+const client = treaty<App>(runtimeConfig.public.apiBaseUrl);
 export const eden = createEdenQueryHelpers(client);

@@ -13,11 +13,11 @@
   },
   "devDependencies": {
     "@shikijs/vitepress-twoslash": "^4.0.2",
-    "@tailwindcss/vite": "^4.2.1",
-    "elysia": "^1.4.27",
-    "tailwindcss": "^4.2.1",
+    "@tailwindcss/vite": "^4.2.2",
+    "elysia": "^1.4.28",
+    "tailwindcss": "^4.2.2",
     "vitepress": "next",
-    "vitepress-plugin-llms": "^1.11.0",
+    "vitepress-plugin-llms": "^1.11.1",
     "vue": "^3.5.30"
   }
 }
