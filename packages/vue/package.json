@@ -1,6 +1,6 @@
 {
   "name": "@elysia-vue-query/vue",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Vue 3 composables (useQuery, useMutation, prefetch) for elysia-vue-query",
   "keywords": [
     "eden",
