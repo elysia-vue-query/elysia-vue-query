@@ -53,6 +53,6 @@ jobs:
         run: vp run publish:packages
 
       - name: Generate GitHub release notes
-        run: vp dlx changelogithub
+        run: vpx changelogithub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

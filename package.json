@@ -24,14 +24,14 @@
     "docs:dev": "pnpm --filter @elysia-vue-query/docs run dev",
     "docs:build": "pnpm --filter @elysia-vue-query/docs run build",
     "docs:preview": "pnpm --filter @elysia-vue-query/docs run preview",
-    "release": "vp run check && vp test run && vp run build && vp dlx bumpp -r --commit \"chore(release): v%s\" --tag --push",
-    "release:dry": "vp dlx bumpp -r --dry",
-    "publish:packages": "vp pm -r --filter './packages/*' publish --access public --provenance --no-git-checks",
+    "release": "vp run check && vp test run && vp run build && vpx bumpp -r --commit \"chore(release): v%s\" --tag --push",
+    "release:dry": "vpx bumpp -r --dry",
+    "publish:packages": "vp exec -r --filter './packages/*' publish --access public --provenance --no-git-checks",
     "prepare": "vp config"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.2",
-    "bumpp": "^10.2.3",
+    "bumpp": "^11.0.1",
     "publint": "^0.3.18",
     "typescript": "^5.9.3",
     "vite-plus": "catalog:",
